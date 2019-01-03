@@ -98,15 +98,15 @@ I2C_DHT12.prototype = {
 
                 this.cache.humidity = Math.round(humidity_higher + humidity_lower / 10);
 
-                let temp_higher = res[2] & parseInt("7f", 16);
-                let temp_lower = res[3];
+                let temp_higher = res[2];
+                let temp_lower = res[3] & parseInt("7f", 16);
 
-                if (res[2] & parseInt("80", 16)) {
+                if (res[3] & parseInt("80", 16)) {
                     temp_higher = -temp_higher;
-                    this.cache.temperature = (Math.round((temp_higher - (temp_lower / 10)) * 2) / 2).toFixed(1);
-                } else {
-                    this.cache.temperature = (Math.round((temp_higher + (temp_lower / 10)) * 2) / 2).toFixed(1);
+                    temp_lower = -temp_lower;
                 }
+
+                this.cache.temperature = (Math.round((temp_higher + (temp_lower / 10)) * 2) / 2).toFixed(1);
 
                 let checksum = res[0] + res[1] + res[2] + res[3];
 
